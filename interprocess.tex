@@ -1,0 +1,13 @@
+\chapter{Interprocess Communication}
+
+\section{External Data Representation}
+
+\noindent External Data representation is an agreed standard for representation of data structures and primitive values. Data structure must be flattened before transmission and rebuilt on arrival. \\
+
+\noindent Marshalling converts data items into the form suitable for transmission. Unmarshalling disassembles a message on arrival and restore data items\\
+
+\subsection{CORBA’s Common Data Representation (CDR)}
+
+\noindent Big / little-endian handling: transmit in sender’s ordering and the recipient translates\\
+
+\noindent Example, flatten a Person struct, with name (string), place (string) and year (long) attributes, with value {“Smith”, “London”, 1934}:\\
