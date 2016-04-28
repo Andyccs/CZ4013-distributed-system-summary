@@ -119,9 +119,9 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 \node[right = 60mm of p3](d3){};
 
 \draw[-] (a) -- (b) node [pos=0.5, above, align=center] {$a\rightarrow b$};
-\draw[->] (b) -- (c) node [pos=0.5, right, align=center] {$b\rightarrow c$};
+\draw[->] (b) -- (c) node [pos=0.3, right, align=center] {$b\rightarrow c$};
 \draw[-] (c) -- (d) node [pos=0.5, above, align=center] {$c\rightarrow d$};
-\draw[->] (d) -- (f) node [pos=0.5, right, align=center] {$d\rightarrow f$};
+\draw[->] (d) -- (f) node [pos=0.3, right, align=center] {$d\rightarrow f$};
 \draw[-] (e) -- (f) node [pos=0.5, above, align=center] {$e\rightarrow f$};
 % Dummy 
 \draw[-] (b) -- (d1);
@@ -137,7 +137,97 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 
 \subsection{Lamport's Logical Clocks}
 
+\begin{center}
+\begin{tikzpicture}[>=stealth',thick,
+roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
+]
+\node[] (p1) {$p_1$};
+\node[below=1cm of p1] (p2) {$p_2$};
+\node[below=1cm of p2] (p3) {$p_3$};
+
+\node[roundnode](a)[right = 1mm of p1.east]{a};
+\node[roundnode](b)[right = 12mm of a.east]{b};
+
+\node[roundnode](c)[right = 30mm of p2.east]{c};
+\node[roundnode](d)[right = 12mm of c.east]{d};
+
+\node[roundnode](e)[right = 12mm of p3.east]{e};
+\node[roundnode](f)[right = 60mm of p3.east]{f};
+
+\node[right = 80mm of p1](d1){};
+\node[right = 80mm of p2](d2){};
+\node[right = 80mm of p3](d3){};
+
+\draw[-] (a) -- (b) node [pos=0.5, below = 5mm, align=center] {$a\rightarrow b\ (1<2)$};
+\draw[->] (b) -- (c) node [pos=0, right = 3mm, align=center] {$b\rightarrow c\ (2<3)$};
+\draw[-] (c) -- (d) node [pos=0.5, below = 5mm, align=center] {$c\rightarrow d\ (3<4)$};
+\draw[->] (d) -- (f) node [pos=0, right = 3mm, align=center] {$d\rightarrow f\ (4<5)$};
+\draw[-] (e) -- (f) node [pos=0.5, below, align=center] {$e\rightarrow f\ (1<5)$};
+
+% Dummy 
+\draw[-] (b) -- (d1);
+\draw[-] (p2) -- (c);
+\draw[-] (d) -- (d2);
+\draw[-] (p3) -- (e);
+\draw[-] (f) -- (d3);
+
+% Label
+\node[above=1mm of a](labela){1};
+\node[above=1mm of b](labelb){2};
+\node[above=1mm of c](labelc){3};
+\node[above=1mm of d](labeld){4};
+\node[above=1mm of e](labele){1};
+\node[above=1mm of f](labelf){5};
+
+\end{tikzpicture}
+\end{center}
+
 \subsection{Vector Clocks}
+
+\begin{center}
+\begin{tikzpicture}[>=stealth',thick,
+roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
+]
+\node[] (p1) {$p_1$};
+\node[below=1cm of p1] (p2) {$p_2$};
+\node[below=1cm of p2] (p3) {$p_3$};
+
+\node[roundnode](a)[right = 1mm of p1.east]{a};
+\node[roundnode](b)[right = 12mm of a.east]{b};
+
+\node[roundnode](c)[right = 35mm of p2.east]{c};
+\node[roundnode](d)[right = 12mm of c.east]{d};
+
+\node[roundnode](e)[right = 12mm of p3.east]{e};
+\node[roundnode](f)[right = 70mm of p3.east]{f};
+
+\node[right = 80mm of p1](d1){};
+\node[right = 80mm of p2](d2){};
+\node[right = 80mm of p3](d3){};
+
+\draw[-] (a) -- (b) node [pos=0.5, below = 5mm, align=center] {$a\rightarrow b$};
+\draw[->] (b) -- (c) node [pos=0, right = 3mm, align=center] {$b\rightarrow c$};
+\draw[-] (c) -- (d) node [pos=0.5, below = 5mm, align=center] {$c\rightarrow d$};
+\draw[->] (d) -- (f) node [pos=0, right = 3mm, align=center] {$d\rightarrow f$};
+\draw[-] (e) -- (f) node [pos=0.5, below, align=center] {$e\rightarrow f$};
+
+% Dummy 
+\draw[-] (b) -- (d1);
+\draw[-] (p2) -- (c);
+\draw[-] (d) -- (d2);
+\draw[-] (p3) -- (e);
+\draw[-] (f) -- (d3);
+
+% Label
+\node[above=1mm of a](labela){(1,0,0)};
+\node[above=1mm of b](labelb){(2,0,0)};
+\node[above=1mm of c](labelc){(2,1,0)};
+\node[above=1mm of d](labeld){(2,2,0)};
+\node[above=1mm of e](labele){(0,0,1)};
+\node[above=1mm of f](labelf){(2,2,2)};
+
+\end{tikzpicture}
+\end{center}
 
 \section{Global States}
 
