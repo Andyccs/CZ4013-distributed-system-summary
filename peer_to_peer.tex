@@ -1,0 +1,69 @@
+\chapter{Peer-to-peer File Sharing Systems}
+\begin{multicols*}{2}
+
+\noindent All processes play similar roles and they interact cooperatively as peers to perform distributed computation. Every node provides some services that helps other nodes in the network to get services. \\
+
+\noindent We will look at three unstructured P2P File Sharing, i.e. Napster, Gnutella, and KaZaA, and three structured DHT Systems, i.e. Distributed Hash Table Services, Consistent Hashing, and Chord. 
+
+\section{Napster}
+
+\noindent Napster has a centralized directory server for centrolized search, but file downloads are done in a distributed way. The centralized server has difficult time keeping up with increasing traffic.\\
+
+\noindent All clients will upload file list and IP address to Napster centralized directory. Users will search for files using the centralized directory. When users found the file they want, they pings hosts that have the file to look for the best transfer rate for downloading. 
+
+\section{Gnutella}
+
+\noindent Gnutella uses a decentralized method to search for files. Each application instance has the responsibility to store files, serve files, route queries and respond to queries. \\
+
+\noindent However, Gnutella use flooding strategy to search for files, and reverse path forwarding is used for responses. The actual downloading is done by point-to-point TCP. As a result, each query can generate huge amount of traffic. Users can limit the number of hops to travel by setting the TTL field.\\
+
+\noindent To establish connection, we first connect to a bootstrap node to get IP addresses of existing Gnutella nodes. Then, we send join messages to some existing Gnutella nodes. 
+
+\section{KaZaA}
+
+\noindent KaZaA provides powerful file search and transfer service without server infrastructure using hierarchical architecture. Frequent uploaders can get priority in server queue. \\
+
+\noindent Nodes that have more connection bandwidth and are more available are designated as supernodes. Each supernode acts as a mini-Napster hub, tracking the contents and IP addresses of its children. \\
+
+\noindent Connection: A list of potential supernodes are included within the software. New peer goes through the list until it finds an operational supernode.\\
+
+\noindent Metadata: When a node connects to a supernode, it uploads its metadata, i.e. file name, file size, content hash, and file description.\\
+
+\noindent Query: Node first sends keyword query to supernode. If supernode cannot get enough number of matches, it forwards query to subset of supernodes. Query results contain the ContentHash of the wanted file and a list of nodes holding the file.\\
+
+\noindent Download: If file is found in multiple nodes, user can download the files parallelly. 
+
+\section{Distributed Hash Table Services}
+
+\noindent In Distributed Hash Table (DHT), we want to assign particular nodes to hold particular contents and arrange neighbour relationship between nodes in a restrictive structure to facilitate query routing.\\
+
+\noindent We use hash function to map files to unique identifiers. Each node is responsible for the files that hash within its range, it must know the location of the files (indirect) or physically store the files (direct). \\
+
+\noindent Query must be efficiently rounted to the node whose range covers the file. This should be implemented in a fully distributed manner. \\
+
+\noindent When nodes join / leave the system, we need bootstrap mechanism, repartition range space, and update routing information. 
+
+\section{Consistent Hashing}
+
+\noindent We need to choose the range space of hash function as \emph{a circle of identifiers} from $0$ to $2^m -1$. $m$ must be large enought to avoid collision of two identifiers. \\
+
+\noindent Each node is assigned the range space from the identifier of its counter-clockwise neighbour node on the identifier circle to its own identifier.\\
+
+\noindent If each node maintains the identifier and IP address of its successor node, the complexity of routing information maintained at each node is $O(1)$ and the complexity of query routing is $O(N)$\\
+
+\noindent If each node maintains the identifiers and IP addresses of all nodes, the complexity of routing information maintained at each node is $O(N)$ and the complexity of query routing is $O(1)$
+
+\section{Chord}
+
+\noindent Each node $n$ maintains identifiers and IP addresses of $m$ successors. The $i$-th entry in the finger table contains the first node that succeeds $n$ by at least $2^{i-1}$ on the identifier circle. \\
+
+\noindent In routing, each node $n$ sends a query for key $k$ to the node in entry:
+
+$$\lfloor log_2(k-n) \rfloor + 1$$
+
+\noindent The complexity of routing information maintained at each node is $O(log(N))$ and the complexity of query routing is $O(log(N))$\\
+
+\noindent Joining and leaving process work like insertion and deletion in a double-linked list. When joining, the node need to copy the location information of all keys within its range from its sucessor, and then need to build the finger table and update all current finger tables. The complexity is $O(log^2(N))$.
+
+
+\end{multicols*}

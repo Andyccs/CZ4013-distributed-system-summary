@@ -6,6 +6,24 @@
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{tikz}
+\usetikzlibrary{arrows,positioning}
+\tikzset{
+    %Define standard arrow tip
+    >=stealth',
+    % Define arrow style
+    pil/.style={
+           ->,
+           thick,
+           shorten <=2pt,
+           shorten >=2pt,}
+}
+\usepackage{geometry}
+\geometry{
+    left=2cm,
+    right=0.64cm,
+    top=0.64cm,
+    bottom=2cm
+}
 \usetikzlibrary{positioning}
 \usepackage{geometry}
 \geometry{
@@ -35,4 +53,5 @@
 \include{interprocess}
 \include{remote_invocation}
 \include{file_system}
+\include{peer_to_peer}
 \end{document}
