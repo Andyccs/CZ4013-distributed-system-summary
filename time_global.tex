@@ -1,0 +1,154 @@
+\chapter{Time and Global States}
+\begin{multicols*}{2}
+
+\noindent Although one of the property of distributed system is no globally shared clock, many distributed applications still depend on timing.
+
+\section{Synchronizing Physical Clock}
+
+\noindent Computers have their own physical clocks that deviate from one another. Universal Coordinated Time (UTC) is commonly used reference clock.\\
+
+\noindent \emph{Clock drift}: clock count time at different rates.\\
+
+\noindent \emph{Drift rate}: the change in offset between a clock and a perfect reference clock per unit of time measured by the reference clock.
+
+\subsection{Cristian's Method}
+
+\noindent The algorithm:
+
+\begin{enumerate}
+  \item $A$ requests the time of $B$
+  \item $B$ replies with the time value $t$
+  \item $A$ records the total RTT, $T_{\text{round}}=t_2 - t_1$
+  \item $A$ sets its clock to $t + T_{\text{round}} / 2$
+\end{enumerate}
+
+\noindent To calculate the accuracy of Cristian's Method, we need to consider 2 cases:
+\begin{enumerate}
+  \item When the transmission time of reply message approaches $0$, $B$'s clock reading is $t$.
+  \item When the transmission time of reply message approaches $T_{\text{round}}$, $B$'s clock reading is $t+ T_{\text{round}}$.
+\end{enumerate}
+
+\noindent When $A$ receives the reply, the time reading on $B$ should be in $[t,t+ T_{\text{round}}]$. $A$ is accurate within bound $T_{\text{round}} / 2$
+
+\subsection{Berkeley Algorithm}
+
+\noindent The algorithm:
+\begin{enumerate}
+  \item Master periodically polls slaves
+  \item Slaves send their clock readings back
+  \item Master evaluates the local times of slaves by observing the RTT
+  \item Master averages the values obtained and its own clock reading
+  \item Master sends the amount of adjustment to each slave
+\end{enumerate}
+
+\noindent We use average clock reading because it cancels out individual clocks' tendencies to run fast or slow. 
+
+\subsection{Network Time Protocol}
+
+\noindent Cristian's method and Berkeley algorithm use centralized design. Network Time Protocol (NTP) is used to distribute time information over the Internet. \\
+
+\noindent NTP has a network of servers structured hierarchically into a synchronization subnet. This setup is fault-tolerance because servers can reconfigure themselves if someone becomes unreachable. 
+
+\subsubsection{Analysis of Accuracy}
+\begin{center}
+\begin{tikzpicture}[>=stealth',thick,
+commentl/.style={text width=0.7cm, align=right},
+commentr/.style={commentl, align=left},]
+\node[] (init) {Server B};
+\node[right=1cm of init] (recv) {Server A};
+
+\draw[->] ([yshift=-.5cm]init.south) coordinate (send1) -- ([yshift=-.7cm]send1-|recv) coordinate (send1done) node[pos=.3, above, sloped] {};
+
+\draw[->] ([yshift=-.3cm]send1done) coordinate (reply1) -- ([yshift=-.7cm]reply1-|init) coordinate (reply1done) node[pos=.3, above, sloped] {m};
+
+\draw[->] ([yshift=-1cm]reply1done) coordinate (send2) -- ([yshift=-.7cm]send2-|recv) coordinate (send2done) node[pos=.3, above, sloped] {m'};
+
+\draw[->] ([yshift=-.3cm]send2done) coordinate (reply2) -- ([yshift=-.7cm]reply2-|init) coordinate (reply2done) node[pos=.3, above, sloped] {};
+
+\draw[thick, shorten >=-1cm] (init) -- (init|-reply2);
+\draw[thick, shorten >=-1cm] (recv) -- (recv|-reply2);
+
+\node[commentr, right =1mm of reply1] {$T_{i-3}$};
+\node[left = 1mm of reply1done.west, commentl]{$T_{i-2}$};
+\node[left = 1mm of send2.west, commentl]{$T_{i-1}$};
+\node[commentr, right =1mm of send2done] {$T_{i}$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Time between sending of $m$ and receipt of $m'$ is $$T_i - T_{i-3}$$
+\noindent Time between receipt of $m$ and sending of $m'$ is $$T_{i-1} - T_{i-2}$$
+\noindent The total transmission time of $m$ and $m'$ is $$(T_i - T_{i-3}) - (T_{i-1} - T_{i-2})$$
+\noindent The transmission time of $m'$ is $$[0,(T_i - T_{i-3}) - (T_{i-1} - T_{i-2})]$$
+\noindent If transmission time of $m'$ approaches $0$, when A receives $m'$ B clock reading is $$T_{i-1}$$
+\noindent If transmission time of $m'$ approaches $(T_i - T_{i-3}) - (T_{i-1} - T_{i-2})$, when A receives $m'$ B clock reading is $$T_{i-1} + (T_i - T_{i-3}) - (T_{i-1} - T_{i-2}) = T_i - T_{i-3} + T_{i-2}$$
+\noindent If A want to synchronize with B as accurately as possible, A should set its clock to $$\frac{1}{2}(T_{i-1} + (T_i - T_{i-3} + T_{i-2})$$
+
+\noindent The accuracy is $$\pm \frac{1}{2}(T_{i-1} - (T_i - T_{i-3} + T_{i-2})$$
+
+\section{Causal Ordering and Logical Clocks}
+
+\noindent We refer the state of process $p_i$ and as $s_i$, and there are $i=1\ldots N$ number of processes.\\
+
+\noindent Process takes a series of actions, i.e. sending a message, receiving a message, or transforms the state of the process.\\
+
+\noindent An event is the occurrence of a single action.
+
+\subsection{Causal Ordering}
+
+\noindent Events can be ordered based on cause-and-effect. Event within a single process $p_i$ can be placed in a unique total ordering. The event of sending the message occurs before the vent of receiving the message. 
+
+\begin{center}
+\begin{tikzpicture}[>=stealth',thick,
+roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
+]
+\node[] (p1) {$p_1$};
+\node[below=1cm of p1] (p2) {$p_2$};
+\node[below=1cm of p2] (p3) {$p_3$};
+
+\node[roundnode](a)[right = 1mm of p1.east]{a};
+\node[roundnode](b)[right = 3mm of a.east]{b};
+
+\node[roundnode](c)[right = 20mm of p2.east]{c};
+\node[roundnode](d)[right = 3mm of c.east]{d};
+
+\node[roundnode](e)[right = 3mm of p3.east]{e};
+\node[roundnode](f)[right = 40mm of p3.east]{f};
+
+\node[right = 50mm of p1](d1){};
+\node[right = 50mm of p2](d2){};
+\node[right = 50mm of p3](d3){};
+
+\draw[-] (a) -- (b);
+\draw[-] (b) -- (d1);
+\draw[-] (p2) -- (c);
+\draw[->] (b) -- (c);
+\draw[-] (c) -- (d);
+\draw[-] (d) -- (d2);
+\draw[->] (d) -- (f);
+\draw[-] (p3) -- (e);
+\draw[-] (e) -- (f);
+\draw[-] (f) -- (d3);
+\end{tikzpicture}
+\end{center}
+
+\noindent Page 333
+
+\subsection{Lamport's Logical Clocks}
+
+\subsection{Vector Clocks}
+
+\section{Global States}
+
+\subsection{Consistent Cut}
+
+\subsection{Recording a Snapshot}
+
+\subsection{Chandy and Lamport Algorithm}
+
+\section{Distributed Debugging}
+
+\subsection{Lattice of Consistent Global States}
+
+\subsection{Observing Consistent Global States}
+
+\end{multicols*}
