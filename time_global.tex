@@ -95,7 +95,7 @@ commentr/.style={commentl, align=left},]
 
 \subsection{Causal Ordering}
 
-\noindent Events can be ordered based on cause-and-effect. Event within a single process $p_i$ can be placed in a unique total ordering. The event of sending the message occurs before the vent of receiving the message. 
+\noindent Events can be ordered based on cause-and-effect. Event within a single process $p_i$ can be placed in a unique total ordering. The event of sending the message occurs before the event of receiving the message. 
 
 \begin{center}
 \begin{tikzpicture}[>=stealth',thick,
@@ -106,32 +106,34 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 \node[below=1cm of p2] (p3) {$p_3$};
 
 \node[roundnode](a)[right = 1mm of p1.east]{a};
-\node[roundnode](b)[right = 3mm of a.east]{b};
+\node[roundnode](b)[right = 12mm of a.east]{b};
 
-\node[roundnode](c)[right = 20mm of p2.east]{c};
-\node[roundnode](d)[right = 3mm of c.east]{d};
+\node[roundnode](c)[right = 25mm of p2.east]{c};
+\node[roundnode](d)[right = 12mm of c.east]{d};
 
-\node[roundnode](e)[right = 3mm of p3.east]{e};
-\node[roundnode](f)[right = 40mm of p3.east]{f};
+\node[roundnode](e)[right = 12mm of p3.east]{e};
+\node[roundnode](f)[right = 50mm of p3.east]{f};
 
-\node[right = 50mm of p1](d1){};
-\node[right = 50mm of p2](d2){};
-\node[right = 50mm of p3](d3){};
+\node[right = 60mm of p1](d1){};
+\node[right = 60mm of p2](d2){};
+\node[right = 60mm of p3](d3){};
 
-\draw[-] (a) -- (b);
+\draw[-] (a) -- (b) node [pos=0.5, above, align=center] {$a\rightarrow b$};
+\draw[->] (b) -- (c) node [pos=0.5, right, align=center] {$b\rightarrow c$};
+\draw[-] (c) -- (d) node [pos=0.5, above, align=center] {$c\rightarrow d$};
+\draw[->] (d) -- (f) node [pos=0.5, right, align=center] {$d\rightarrow f$};
+\draw[-] (e) -- (f) node [pos=0.5, above, align=center] {$e\rightarrow f$};
+% Dummy 
 \draw[-] (b) -- (d1);
 \draw[-] (p2) -- (c);
-\draw[->] (b) -- (c);
-\draw[-] (c) -- (d);
 \draw[-] (d) -- (d2);
-\draw[->] (d) -- (f);
 \draw[-] (p3) -- (e);
-\draw[-] (e) -- (f);
 \draw[-] (f) -- (d3);
+
 \end{tikzpicture}
 \end{center}
 
-\noindent Page 333
+\noindent From the figure above, we can deduce that $a$ happens before $f$, $a\rightarrow f$, and $a$ is parallel to $e$, $e\|e$ 
 
 \subsection{Lamport's Logical Clocks}
 
