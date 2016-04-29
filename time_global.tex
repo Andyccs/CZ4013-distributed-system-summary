@@ -137,6 +137,8 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 
 \subsection{Lamport's Logical Clocks}
 
+\noindent Logical clock is a monotonically increasing software counter whose value bears no particular relationship with real time. 
+
 \begin{center}
 \begin{tikzpicture}[>=stealth',thick,
 roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
@@ -182,7 +184,11 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 \end{tikzpicture}
 \end{center}
 
+\noindent From the diagram above, since $a\rightarrow f$, so $L(a)<L(e')$. This is always true, but the converse is not. Specifically, if $L(e)<L(e')$, we cannot infer that $e\rightarrow e'$.
+
 \subsection{Vector Clocks}
+
+\noindent A vector clock for $N$ processes is an array of $N$ integers. Each process has its own vector clock. 
 
 \begin{center}
 \begin{tikzpicture}[>=stealth',thick,
@@ -229,13 +235,83 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 \end{tikzpicture}
 \end{center}
 
+\noindent If $e\rightarrow e'$, then $V(e)\rightarrow V(e')$. 
+
+\noindent If $V(e)\rightarrow V(e')$, then $e\rightarrow e'$. 
+
+\noindent If $e\|e'$, then neither $V(e)\le V(e')$ nor $V(e')\le V(e)$
+
 \section{Global States}
+
+\noindent In many situations, we need to find out whether a particular property is true when a distributed system executes. We want to assemble a meaningful global state from local states recorded by different process at different real times.\\
+
+\noindent The state of process $p_i$ is the state immediately after its $k$-th event occurs. Global state is a set of states of all processes.
 
 \subsection{Consistent Cut}
 
+\noindent A consistent cut is a cut $C$, such that for all events $\forall e\in C$, $\exists f \in C, f\rightarrow e$. Otherwise, the cut is unconsistent. 
+
+\tiny
+\begin{center}
+\begin{tikzpicture}[>=stealth',thick,
+roundnode/.style={circle, draw=black, thick, minimum size=0.3cm},
+]
+
+\node[] (p1) {$p_1$};
+\node[below=1cm of p1] (p2) {$p_2$};
+
+\node[roundnode](e11)[right = 1mm of p1.east]{$e_1^1$};
+\node[roundnode](e12)[right = 5mm of e11.east]{$e_1^2$};
+\node[roundnode](e13)[right = 5mm of e12.east]{$e_1^3$};
+\node[roundnode](e14)[right = 43mm of e13.east]{$e_1^4$};
+
+\node[roundnode](e21)[right = 37mm of p2.east]{$e_2^1$};
+\node[roundnode](e22)[right = 5mm of e21.east]{$e_2^2$};
+\node[roundnode](e23)[right = 5mm of e22.east]{$e_2^3$};
+
+\node[right = 83mm of p1](d1){};
+\node[right = 83mm of p2](d2){};
+
+\draw[-] (e11) -- (e12);
+\draw[-] (e12) -- (e13);
+\draw[-] (e13) -- (e14);
+
+\draw[->] (e12) -- (e21) node [pos=0.5, right = 3mm, align=center] {$m_1$};
+\draw[-] (e21) -- (e22);
+\draw[-] (e22) -- (e23);
+\draw[->] (e23) -- (e14) node [pos=0.3, right = 3mm, align=center] {$m_2$};
+
+% Dummy 
+\draw[-] (p2) -- (e21);
+\draw[-] (e14) -- (d1);
+\draw[-] (e23) -- (d2);
+
+\draw[dashed] 
+  ([yshift=10pt]$ (e13)!0.5!(e14) $ ) -- 
+  ([yshift=-25pt]$ (e13)!0.5!(p2) $ ) node [below = 1mm] {consistent};
+
+\end{tikzpicture}
+\end{center}
+\normalsize
+
 \subsection{Recording a Snapshot}
 
-\subsection{Chandy and Lamport Algorithm}
+\noindent To record a snapshot, we need to record the states of all processes and the state of communication channels.  
+
+\subsubsection{Chandy and Lamport Algorithm}
+
+\noindent The algorithm uses a marker messages to prompt the receiver to save its own local state and determine which messages to include in the channel state.
+
+\noindent The algorithm:
+
+\begin{itemize}
+  \item Any process may initiate a snapshot recording at any time
+  \item Each non-initiating process records its proces state on receiving the first marker message
+  \item If $p_j$ is the initiating process, $p_j$ initiates the messages arriving on channel $c_{i\rightarrow j}$ between $p_j$ initiates the snapshot recording and receives the marker message from $p_i$
+  \item If $p_j$ is non-initiating process and $c_{i\rightarrow j}$ is the channel through which $p_j$ receives its first marker message, $c_{i\rightarrow j}$ state is recorded as an empty set
+  \item If $p_j$ is non-initiating process and $c_{i\rightarrow j}$ is not the channel through which $p_j$ receives its first marker message, $p_j$ records the message arriving on channel $c_{i\rightarrow j}$ between $p_j$ receives the first marker message and the marker message from $p_i$
+  \item Each process completes all recording activities when it has received a marker message from all other processes. Then, it may send the recorded states (local process state + channel states) to the initiating process.
+\end{itemize}
 
 \section{Distributed Debugging}
 

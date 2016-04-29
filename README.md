@@ -6,6 +6,12 @@ To download this document in PDF format: [download now]()
 
 ## Development
 
+To load this project using Sublime Text 3:
+
+```Shell
+$ subl --project distributed.sublime-project
+```
+
 If you would like to build this document from source, first you need to install TeX:
 
 ```Shell
