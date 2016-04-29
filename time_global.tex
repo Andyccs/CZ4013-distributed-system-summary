@@ -247,7 +247,7 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 
 \noindent The state of process $p_i$ is the state immediately after its $k$-th event occurs. Global state is a set of states of all processes.
 
-\subsection{Consistent Cut}
+\subsection{Consistent Cut} \label{section:consistent-cut}
 
 \noindent A consistent cut is a cut $C$, such that for all events $\forall e\in C$, $\exists f \in C, f\rightarrow e$. Otherwise, the cut is unconsistent. 
 
@@ -315,7 +315,56 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.3cm},
 
 \section{Distributed Debugging}
 
+\noindent We want to establish what occurred during the execution of a distributed system and to check whether they are correct. 
+
 \subsection{Lattice of Consistent Global States}
+
+\noindent Refering to the figure in section \ref{section:consistent-cut}, we will get the following lattice of consistent global states. The lattice is constructed by listing all consistent global states starting from the initial state and advance the global state by one event at a time. 
+
+\begin{center}
+\begin{tikzpicture}[
+recnode/.style={rectangle, draw=white, thin},
+level distance=0.7cm,
+level 1/.style={sibling distance=0.7cm},
+level 2/.style={sibling distance=0.7cm},
+level 3/.style={sibling distance=0.7cm},
+level 4/.style={sibling distance=0.7cm},
+level 5/.style={sibling distance=0.7cm},
+level 6/.style={sibling distance=0.7cm},
+level 7/.style={sibling distance=0.7cm},
+level 8/.style={sibling distance=0.7cm},
+]
+%Nodes
+\node[recnode,draw](s00){$S_{00}$}
+  child[left] {node[recnode,draw](s10){$S_{10}$} edge from parent[-]
+    child[left] {node[recnode,draw](s20){$S_{20}$} edge from parent[-]
+      child[left] {node[recnode,draw](s30){$S_{30}$} edge from parent[-]}
+      child[right] {node[recnode,draw](s21){$S_{21}$} edge from parent[-]
+        child[left] {node[recnode,draw](s31){$S_{31}$} edge from parent[-]}
+        child[right] {node[recnode,draw](s22){$S_{22}$} edge from parent[-]
+          child[left] {node[recnode,draw](s32){$S_{32}$} edge from parent[-]}
+          child[right] {node[recnode,draw](s23){$S_{23}$} edge from parent[-]
+            child[left] {node[recnode,draw](s33){$S_{33}$} edge from parent[-]
+              child[left] {node[recnode,draw](s43){$S_{43}$} edge from parent[-]}
+              child[missing] {node[recnode,draw](d){} edge from parent[-]}
+            }
+            child[missing] {node[recnode,draw](d){} edge from parent[-]}
+          }
+        }
+      }
+    }
+    child[missing] {node[recnode,draw](d){} edge from parent[-]}
+  }
+  child[missing] {node[recnode,draw](d){} edge from parent[-]}
+;
+
+\draw (s31) -- (s30);
+\draw (s32) -- (s31);
+\draw (s33) -- (s32);
+\end{tikzpicture}
+\end{center}
+
+
 
 \subsection{Observing Consistent Global States}
 
