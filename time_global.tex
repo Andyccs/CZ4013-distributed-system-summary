@@ -364,8 +364,17 @@ level 8/.style={sibling distance=0.7cm},
 \end{tikzpicture}
 \end{center}
 
+\noindent Each path from top-level state to the bottom level state in the lattice represents an ordering of all events that are consistent with causal ordering. Without global time, we cannot tell which one is the actual execution of the system among all possible executions.\\
 
+\noindent In general, $<s_1^{c_i}, s_2^{c_j},\ldots,s_N^{c_N}>$ is a consistent global state if $V(e_i^{c_i})[i] \ge V(e_j^{c_j})[i]$ for any $i$ and $j$. \\
 
-\subsection{Observing Consistent Global States}
+\noindent If there are only two processes, $S_{ij} = <s_1^{i}, s_2^{j}>$ is a consistent global state if $V(e_1^{i})[1] \ge V(e_2^{j})[1]$ and $V(e_2^{j}[2]) \ge V(e_1^{i})[2]$\\
+
+\noindent To check whether a constraint is broken during execution, we need to evaluate whether each global state satisfies the constraint:
+\begin{itemize}
+  \item If all states satisfy the constraint, the constraint cannot be broken in the execution
+  \item If there exists a state not satisfying the constraint, the constraint is possibly broken in the execution
+  \item If every path from top to bottom passes through at least one state that does not satisfy the constraint, the constraint must be broken in the execution
+\end{itemize}
 
 \end{multicols*}
