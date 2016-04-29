@@ -1,0 +1,165 @@
+\chapter{Coordination and Agreement}
+\begin{multicols*}{2}
+
+\noindent Problems and issues in coordination and agreement:
+\begin{itemize}
+  \item Mutual exclusion: for processes to coordinate their accesses to shared resources
+  \item Election: for processes to agree on a coordinator
+  \item Consensus: for processes to agree on some value
+\end{itemize}
+
+\section{Distributed Mutual Exclusion}
+
+\noindent Objective: to prevent interference when a set of processes access shared resources that require exclusive use.\\
+
+\noindent Requirements for Mutual Exclusion:
+\begin{enumerate}
+  \item Safety: at most one process may execute in the critical section at a time
+  \item Liveness: requests to enter and exit the critical section eventually succeed, no deadlock and starvation. 
+\end{enumerate}
+
+\subsection{Central Server Algorithm}
+
+\noindent Token: permission to enter the critical section\\
+
+\noindent To enter critical section, a process sends a request to the server and awaits a reply from it. If no other process has the token, the server replies immediately and granting the token. If there is another process has the token, the server queues the request. The process enters the critical section once it receives the token.\\
+
+\noindent To exit a critical section, a process sends the token back to the server. The server will get the next process from the queue and grat the token.\\
+
+\noindent The algorithm satisfies safety and liveness requirements, but the server is a single point of failure and can become a performance bottleneck. \\
+
+\noindent Performance:
+
+\begin{enumerate}
+  \item Bandwidth consumption: entering critical section takes two message (request and grant), existing critical section takes one message (release)
+  \item Client delay: Entering critical section delays the process by two message transmissions
+  \item Synchronization delay: two message transmissions (release message to server and grant message to next process)
+\end{enumerate}
+
+\subsection{Ring-based Algorithm}
+
+\noindent The algorithm:
+\begin{itemize}
+  \item A token is circulated in clockwise direction around the ring.
+  \item On receiving token, if the process 
+  \begin{itemize}
+    \item does not require to enter critical section, it forwards the token
+    \item does require to enter critical section, it retains the token and enters. The process sends the token to neigbour to exit critical section. 
+  \end{itemize}
+\end{itemize}
+
+\noindent Performance:
+
+\begin{itemize}
+  \item Bandwidth consumption: if every process constantly wants to enter a critical section, each token pass results in one entry and exit.
+  \item Client delay: between $0$ to $N$ message transmissions
+  \item Synchronization delay: between $1$ and $N$ message transmissions
+\end{itemize}
+
+\subsection{Ricart and Agrawala Algorithm}
+
+\noindent This algorithm requires a total ordering of all events. Each process is in either \verb|RELEASED|, \verb|WANTED|, or \verb|HELD| states.\\
+
+\noindent The algorithm:
+\begin{itemize}
+  \item To enter critical section, a process change to \verb|WANTED| state and send request messages to all other processes. The process can enter critical section (\verb|HELD| state) only when all other processes have replied to the requests.
+  \item When a process receives a request message, if the receiver is in \verb|HELD| state, it queue the request. If the receiver is in \verb|WANTED| state, it compares the timestamp of the request with its own request. If the request has smaller timestamp, reply. Else, queue the request.
+  \item When the process exits critical section, change to \verb|RELEASED| state and reply to all queued requests.
+\end{itemize}
+
+\noindent Performance:
+
+\begin{itemize}
+  \item Bandwidth consumption: Entering critical section takes $N-1$ requests and $N-1$ replies.
+  \item Client delay: entering critical section delays the process by 2 message transmission if all requests are sent simultaneously
+  \item Synchronization delay: 1 message transmission
+\end{itemize}
+
+\section{Election}
+
+\noindent Objective: to choose unique process (coordinator) to play a particular role.\\
+
+\noindent Different processes may call elections concurrently, so we need to ensure a unique coordinator is elected. More processes may fail during election, so we need to ensure that non-crashed process is elected eventually.\\
+
+\noindent We assume that each process has a unique identifier, and we require the coordinator with the largest identifier to be chosen.\\
+
+\noindent Turnaround time: the number of serialized message transmission times between the initiation and termination of an election. 
+
+\subsection{Ring-based Algorithm}
+
+\noindent Arrage processes in a logical ring. A process is participant if it engaged in some elections, otherwise, it is non-participant.\\
+
+\noindent The algorithm:
+\begin{itemize}
+  \item A process initiate an election by marking itself as participant, placing its identifier in the election message and send it to its neigbour.
+  \item When a process receives election message, it compares the identifier in the message with its identifier.
+  \begin{itemize}
+    \item If arrived identifier is greater, forward the message
+    \item If arrived identifier is smaller and the receiver is non-participant, substitude with own identifier and forward the message
+    \item If arrived identifier is smaller and the receiver is participant, drop the message
+    \item Once the process forwards the message, it marks itself as participant
+    \item If the arrived identifier is equal, the process become coordinator. It marks itself as non-participant and sends elected message to neighbour. All other processes will marks themselve as non-participant, records the coordinator, and forwards the message.
+  \end{itemize}
+\end{itemize}
+
+\noindent Performance:
+\begin{itemize}
+  \item Bandwidth consumption: when the anti-clockwise neighbour has the largest identifier, it takes $N-1$ messages to reach the neigbour, then $N$ more messages to complete the circuit, then $N$ elected messages. In total, we need $3N-1$ messages
+  \item Turnaround time: $3N-1$ messages
+\end{itemize}
+
+\subsection{Bully Algorithm}
+
+\noindent This algorithm allows process to crash during an election. It assumes asynchronous system and us timeouts to detect process crash. If no response arrives within time $T=2T_{\text{trans}} + T_{\text{process}}$, then intended recipient must have crashed.\\
+
+\noindent We assume that each process knows which processes have larger identifiers and it can communicate with all such processes.\\
+
+\noindent The algorithm:
+
+\begin{itemize}
+  \item Any process that detects the coordinator crashes can start an election. When the process begins an election:
+  \begin{itemize}
+    \item The process sends election messages to all processes with larger identifiers.
+    \item If no answer message responds within time T, the process wins the election and becomes coordinator. The process announces the result of election by seding coordinator messages to all processes.
+    \item If some process responds within answer message, the process waits for coordinator message to arrive from new coordinator
+  \end{itemize}
+  \item When a process receives an election message, the process sends back answer message and starts an election
+  \item If a crashed process comes back up, and it knows that it has the largest identifier, it announces that it is coordinator by sending coordinator messages.
+\end{itemize}
+
+\noindent Performance:
+\begin{itemize}
+  \item Bandwidth consumption: 
+  \begin{itemize}
+    \item Best case: the process with the second largest identifier detects the crash, $1$ election message and $N-2$ coordinator messages.
+    \item Worst case: the process with the smallest identifier detects the crash, we need $O(N^2)$ messages.
+  \end{itemize}
+  \item Turnaround time: Best case: $T$ + 1 message transmission
+\end{itemize}
+
+\section{Consensus Problem}
+
+\noindent Objectives: for processes to agree on a value even in the presence of failtures after one or more processes have proposed the value.\\
+
+\noindent Requirements of Consensus Problem:
+\begin{itemize}
+  \item Termination: each correct process sets its decision variable eventually
+  \item Agreement: the decision values of all correct processes are the same
+  \item Integrity: if the correct processes all proposed the same value, then any correct process in the decided state has chosen that value
+\end{itemize}
+
+\subsection{Consensus in Synchronous System}
+
+\noindent We assume that up to $f$ of the $N$ processes may crash.\\
+
+\noindent In the absence of process crash, each process $p_i$ multicasts its proposed value $v_i$ to all other process and waits until it has collected all $N$ values and then evaluates a function to set its decision variable.\\
+
+\noindent When processes crash, the processes may not actually send values to all other processes. So not all processes receive the same set of values.\\
+
+\noindent To solve the problem, we run the algorithm for $f+1$ rounds. At the end of the last round, all correct processes that survice must have received the same set of values. 
+
+\subsection{Consensus in Asynchronous System}
+
+\noindent No algorithm can guarantee to reach consensus in asynchronous systems even if there is only one faulty process
+
+\end{multicols*}
