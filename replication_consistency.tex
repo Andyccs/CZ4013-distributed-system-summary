@@ -1,0 +1,134 @@
+\chapter{Replication and Consistency}
+\begin{multicols*}{2}
+
+\noindent Data replication means maintaining copies of data at multiple computers to improve performance, scalability, reliability and fault-tolerance. However, we need to pay the price of consistency of replicas.
+
+\section{Data-Centric Consistency Models}
+
+\noindent To provide a system wide consistent view of data objets when concurrent processes simultaneously update data objects.
+
+\noindent Target scenario: concurrent processes may simultaneously update data objects.
+
+\subsection{Strict Consistency}
+
+\noindent Any read operation on a data object returns a value corresponding to the result of the most recent write operation on the object. All wirtes are instaneously visible to all clients. \\
+
+\noindent In the absence of a global clock in distributed system, it is difficult to assign a unique timestamp to each operation that corresponds to actual global time. It is also difficult to define precisely which write operation is the most recent. 
+
+\subsection{Sequential Consistency}
+
+\noindent The result of any execution is the same as if the operations by all clients were executed in some sequential order. The operation of each individual client appear in this sequence in the order specified by its program. 
+
+\subsection{Causal Consistency}
+
+\noindent Causal consistency makes distinction between events that are potentially causally related and those that are not. A read is causally related to the write that provided the data the read got.\\
+
+\noindent Writes that are potentially causally related must be seen by all clients in the same order. Concurrent writes may be seen in different orders by different clients. 
+
+\subsection{FIFO Consistency}
+
+\noindent Writes done by a single client are seen by other clients in the order in which they were issued. Writes from different clients may be seen in different orders by different clients. 
+
+\section{Consistency Protocols}
+
+\noindent A consistency protocol describes an actual implementation of a specific consistency model.
+
+\subsection{Primary-Based Protocols}
+
+\noindent For each data object, one replica is designated as the primary replica and the remaining replicas are called backups / slaves. 
+
+\subsubsection{Remote-Write Protocol}
+
+\noindent Implementation of sequential consistency. The algorithm:
+
+\begin{itemize}
+  \item Write operations are forwarded to the primary replica. The primary replica performs the update and then forwards the update to the backup replicas.
+  \item Each backup replica performs the update as well and sends an acknowledgement back to the primary replica
+  \item Finally, the primary replica sends an acknowledgement back to the initiating client.
+\end{itemize}
+
+\noindent Write operations are blocking, read operations can be carried out at any replica. 
+
+\subsubsection{Local-Write Protocol}
+
+\noindent The algorithm:
+\begin{itemize}
+  \item The primary replica is migrated to the replica that receive client request. 
+  \item As soon as the primary replica has updated its local copy, it returns an acknowledgement to the client
+  \item Then, the primary replica tells the backup replicas to perform the update
+\end{itemize}
+
+\noindent Advantage: Multiple successive write operations can be carried out locally.
+
+\subsection{Active Replication}
+
+\noindent In active replication, all replicas play the same role and write operations are carried out at all replicas. Operations are sent to all replicas via totally ordered multicast. All replicas start in the same state and perform the same operations in the same order. \\
+
+\noindent Write operations are blocking, and read operation can be carried out at any replica. \\
+
+\noindent Active replication achieves sequential consistency. It can tolerate up to $f$ byzantine failture using $2f+1$ replicas.
+
+\subsection{Gifford’s Quorum-Based Protocol}
+
+\noindent A network partition separates a group of replicas into two or more subgroups in such a way that replicas of one subgroup can communicate with one another, but replicas of different subgroups cannot communicate with one another. \\
+
+\noindent A quorum is a subgroup of replicas whose size gives it the right to perform operations.\\
+
+\noindent In this protocol, update operation may be performed by one subset of replicas only. When a replica is updated, its version number is changed accordingly. Operations are applied only to replicas with the latest version number.\\
+
+\noindent Operation:
+\begin{itemize}
+  \item Each read operation must obtain a read quorum $\ge R$ replicas before it can read
+  \item Each write operation must obtain a write quorum $\ge W$ replicas before it can write
+\end{itemize}
+
+\noindent $R$ and $W$ are set such that ($T$ is the total number of all replicas):
+$$W > \frac{T}{2}$$
+$$R+W > T$$
+
+\noindent These constraints ensure that any pair of read and write quorums or two write quorums contain common replicas.\\
+
+\noindent To perform read operation, client must contact at least $R$ replicas and the replicas must contain at least one up-to-date replica. The read can be done in any up-to-date replica in the read quorum. \\
+
+\noindent To perform write operation, client must contact at least $W$ replicas and the replicas must contain at least one up-to-date replica. If there are out-of-date replicas in the set, replace them with the up-to-date copy. The write operation is applied to all replicas in the write quorum, and version number is incremented. 
+
+\section{Client-Centric Consistency Models}
+
+\noindent Target scenario: lack of simultaneous updates and most operations involve reading data.\\
+
+\noindent Eventually consistency: if no update takes place for a long time, all replicas will gradually become consistent. Eventually consistent works fine as long as clients always access the same replica, but problems arise when different replicas are accessed. \\
+
+\noindent Client-centric consistency provides guarantees for a single client concerning the consistency of its accesses to data objects.
+
+\subsection{Monotonic Reads}
+
+\noindent If a client reads the value of a data object $x$, any successive read operation on $x$ by that client will always return that same value or a more recent value.
+
+\subsection{Monotonic Writes}
+
+\noindent A write operation by a client on a data object $x$ is completed before any successive write operation on $x$ by the same client. 
+
+\subsection{Read Your Writes}
+
+\noindent The effect of a write operation by a client on a data object $x$ will always be seen by a successive read operation on $x$ by the same client
+
+\subsection{Writes Follow Reads}
+
+\noindent A write operation by a client on a data object $x$ following a previous read operation on $x$ by the same client is guaranteed to take place on the same or a more recent value of $x$ that was read
+
+\subsection{Implementation of Monotonic Reads Consistency}
+
+\noindent Each write operation is assigned a globally unique identifier. Each client keeps track of two sets of write operations:
+\begin{itemize}
+  \item Read set has identifiers of writes relevant to the read operations performed by the clinet
+  \item Write set has identifiers of writes performed by the client
+\end{itemize}
+
+\noindent The algorithm:
+\begin{itemize}
+  \item When a client performs read at a replica, the replica check whether all the write operations in the read set have been taken place locally.
+  \item If not, the replica contacts other replicas to update itself.
+  \item After the read operation, the write operation that have taken place at the selected replica and which are relevant to the read operation are added to the client's read set.
+\end{itemize}
+
+\end{multicols*}
