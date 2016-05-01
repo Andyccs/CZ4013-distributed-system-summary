@@ -2,7 +2,7 @@
 
 This LaTex document is a summary of the course CZ4013 Distributed System, offered by School of Computer Science and Engineering, Nanyang Technological University, Singapore. 
 
-To download this document in PDF format: [download now](https://github.com/Andyccs/CZ4013-distributed-system-summary/releases/download/v0.1/CZ4013DistributedSystemSummary.pdf)
+To download this document in PDF format: [download now](https://github.com/Andyccs/CZ4013-distributed-system-summary/releases/download/v0.2/CZ4013DistributedSystemSummary.pdf)
 
 ## Development
 
