@@ -5,9 +5,9 @@
 
 \noindent Remote method invocation means method invocation between objects in different processes\\
 
-\noindent Remote object reference is use to uniquely identify an object throughout a distributed system\\
+\noindent Remote object reference is used to uniquely identify an object throughout a distributed system\\
 
-\noindent Remote Interface: each remote object has a remote interface specifying the methods that can be invoked remotely
+\noindent Remote interface: each remote object has a remote interface specifying the methods that can be invoked remotely
 
 \section{Invocation Semantics}
 
@@ -44,13 +44,63 @@
 
 \section{Java RMI Architecture}
 
-\noindent Step 1: Design the remote interface\\
+\noindent Step 1: Design the remote interface
 
-\noindent Step 2: Design the servant class to implement the methods specified in the remote interface\\
+\begin{minted}{Java}
+public interface City extends Remote {
+  int addInformation(String cityName, 
+    String information)
+    throws RemoteException;
 
-\noindent Step 3: Design the server class to create remote objects and register then in RMI registry\\
+  String getInformation(String cityName)
+    throws RemoteException;
+}
+\end{minted}
 
-\noindent Step 4: Design the client  class to look up remote objects and access them\\
+\noindent Step 2: Design the servant class to implement the methods specified in the remote interface
+
+\begin{minted}{Java}
+public class CityImpl
+    extends UnicastRemoteObject
+    implements City {
+  public CityImpl() throws RemoteException {
+    super();
+  }
+  int addInformation(…) …  { … }
+  String getInformation(…) …  { … }
+}
+\end{minted}
+
+\noindent Step 3: Design the server class to create remote objects and register then in RMI registry
+
+\begin{minted}{Java}
+public class CityServer {
+  public static void main(String args[]) {
+    try {
+      CityImpl aCityImpl = new CityImpl();
+      Naming.rebind(
+          "rmi://.../City", 
+          aCityImpl);
+    } catch (Exception e) {...}
+  }
+}
+\end{minted}
+
+\noindent Step 4: Design the client  class to look up remote objects and access them
+
+\begin{minted}{Java}
+public class CityClient {
+  public static void main(String args[]) {
+    try {
+      City aCityServer = 
+          (City) Naming.lookup("rmi://.../City");
+      aCityServer.getInformation(...);
+    } 
+    catch (RemoteException e) {...}
+    catch (Exception e) {...}
+  }
+}
+\end{minted}
 
 \noindent Step 5: Compile remote interface, generating proxies, skeletons, and compile source codes\\
 
@@ -60,8 +110,35 @@
 
 \noindent Callback: the server informs the client when the information is updated\\
 
-\noindent Client create a remote object that implements “Remote” interface, which contains a method for server to call\\
+\noindent Client create a remote object that implements “Remote” interface, which contains a method for server to call
+
+\begin{minted}{Java}
+public interface Callback extends Remote {
+  void theMethod() throws RemoteException;
+}
+
+public class CityClient {
+  public static void main(String args[]) {
+    try {
+      City aCityServer = 
+          (City) Naming.lookup("rmi://.../City");
+      Callback cb = new Callback();
+      aCityServer.register(cb);
+    } catch (RemoteException e) {
+    }
+  }
+}
+\end{minted}
 
 \noindent Server provides “register” and “deregister” operation for interested clients. When an event of interest occurs, server invokes the method in callback objects
+
+\begin{minted}{Java}
+public interface City implements Remote {
+  void register(Callback cbObject) 
+      throws RemoteException;
+  void deregister(Callback cbObject) 
+      throws RemoteException;
+}
+\end{minted}
 
 \end{multicols*}

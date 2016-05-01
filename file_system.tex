@@ -111,7 +111,7 @@
 
 \noindent AFS uses session update semantics to be more scalable. All other clients are able to see a modified file only after the file is closed by the client that modified it.\\
 
-\noindent Callback mechanism is used to maintain cache consistency of client side. Vice server will issue a callback promise in \textit{valid} state to Venus client when the server sends a fresh file copy to client. When there is a update of the file at server side, the server will inform all clients with valid callback promise and remove these clients from its callback list. When a clinet receives a callback from the server, the client sets the callback promise to \textit{cancelled}.\\
+\noindent Callback mechanism is used to maintain cache consistency of client side. Vice server will issue a callback promise in \textit{valid} state to Venus client when the server sends a fresh file copy to client. When there is a update of the file at server side, the server will inform all clients with valid callback promise and remove these clients from its callback list. When a client receives a callback from the server, the client sets the callback promise to \textit{cancelled}.\\
 
 \noindent However, if there is an update at server side before a client close a session / file, the callback has no effect on the file at currect session. If multiple clients write to a file concurrently, all update are silently lost except those of the last client closing the file. 
 
@@ -149,6 +149,6 @@ roundnode/.style={rectangle, draw=black, thin},
 \end{tikzpicture}
 \end{center}
 
-\noindent When the connection is established again, updates made to files during disconnection are transferred to the server. In case of conflicts, we can use automatic conflict resotluion or manual intervention to resolve conflict. However, conflicts are rare because most files are written by only one user at a time. 
+\noindent When the connection is established again, updates made to files during disconnection are transferred to the server. In case of conflicts, we can use automatic conflict resolution or manual intervention to resolve conflict. However, conflicts are rare because most files are written by only one user at a time. 
 
 \end{multicols*}
