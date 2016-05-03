@@ -110,7 +110,7 @@
 
 \subsection{Bully Algorithm}
 
-\noindent This algorithm allows process to crash during an election. It assumes asynchronous system and us timeouts to detect process crash. If no response arrives within time $T=2T_{\text{trans}} + T_{\text{process}}$, then intended recipient must have crashed.\\
+\noindent This algorithm allows process to crash during an election. It assumes synchronous system and uses timeouts to detect process crash. If no response arrives within time $T=2T_{\text{trans}} + T_{\text{process}}$, then intended recipient must have crashed.\\
 
 \noindent We assume that each process knows which processes have larger identifiers and it can communicate with all such processes.\\
 
