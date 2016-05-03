@@ -41,13 +41,13 @@
   \item Master sends the amount of adjustment to each slave
 \end{enumerate}
 
-\noindent We use average clock reading because it cancels out individual clocks' tendencies to run fast or slow. 
+\noindent We use average clock reading because it cancels out individual clocks' tendencies to run fast or slow.
 
 \subsection{Network Time Protocol}
 
 \noindent Cristian's method and Berkeley algorithm use centralized design. Network Time Protocol (NTP) is used to distribute time information over the Internet. \\
 
-\noindent NTP has a network of servers structured hierarchically into a synchronization subnet. This setup is fault-tolerance because servers can reconfigure themselves if someone becomes unreachable. 
+\noindent NTP has a network of servers structured hierarchically into a synchronization subnet. This setup is fault-tolerance because servers can reconfigure themselves if someone becomes unreachable.
 
 \subsubsection{Analysis of Accuracy}
 \begin{center}
@@ -95,7 +95,7 @@ commentr/.style={commentl, align=left},]
 
 \subsection{Causal Ordering}
 
-\noindent Events can be ordered based on cause-and-effect. Event within a single process $p_i$ can be placed in a unique total ordering. The event of sending the message occurs before the event of receiving the message. 
+\noindent Events can be ordered based on cause-and-effect. Event within a single process $p_i$ can be placed in a unique total ordering. The event of sending the message occurs before the event of receiving the message.
 
 \begin{center}
 \begin{tikzpicture}[>=stealth',thick,
@@ -123,7 +123,7 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 \draw[-] (c) -- (d) node [pos=0.5, above, align=center] {$c\rightarrow d$};
 \draw[->] (d) -- (f) node [pos=0.3, right, align=center] {$d\rightarrow f$};
 \draw[-] (e) -- (f) node [pos=0.5, above, align=center] {$e\rightarrow f$};
-% Dummy 
+% Dummy
 \draw[-] (b) -- (d1);
 \draw[-] (p2) -- (c);
 \draw[-] (d) -- (d2);
@@ -133,11 +133,11 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 \end{tikzpicture}
 \end{center}
 
-\noindent From the figure above, we can deduce that $a$ happens before $f$, $a\rightarrow f$, and $a$ is parallel to $e$, $a\|e$ 
+\noindent From the figure above, we can deduce that $a$ happens before $f$, $a\rightarrow f$, and $a$ is parallel to $e$, $a\|e$
 
 \subsection{Lamport's Logical Clocks}
 
-\noindent Logical clock is a monotonically increasing software counter whose value bears no particular relationship with real time. 
+\noindent Logical clock is a monotonically increasing software counter whose value bears no particular relationship with real time.
 
 \begin{center}
 \begin{tikzpicture}[>=stealth',thick,
@@ -166,7 +166,7 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 \draw[->] (d) -- (f) node [pos=0, right = 3mm, align=center] {$d\rightarrow f\ (4<5)$};
 \draw[-] (e) -- (f) node [pos=0.5, below, align=center] {$e\rightarrow f\ (1<5)$};
 
-% Dummy 
+% Dummy
 \draw[-] (b) -- (d1);
 \draw[-] (p2) -- (c);
 \draw[-] (d) -- (d2);
@@ -188,7 +188,7 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 
 \subsection{Vector Clocks}
 
-\noindent A vector clock for $N$ processes is an array of $N$ integers. Each process has its own vector clock. 
+\noindent A vector clock for $N$ processes is an array of $N$ integers. Each process has its own vector clock.
 
 \begin{center}
 \begin{tikzpicture}[>=stealth',thick,
@@ -217,7 +217,7 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 \draw[->] (d) -- (f) node [pos=0, right = 3mm, align=center] {$d\rightarrow f$};
 \draw[-] (e) -- (f) node [pos=0.5, below, align=center] {$e\rightarrow f$};
 
-% Dummy 
+% Dummy
 \draw[-] (b) -- (d1);
 \draw[-] (p2) -- (c);
 \draw[-] (d) -- (d2);
@@ -235,9 +235,9 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 \end{tikzpicture}
 \end{center}
 
-\noindent If $e\rightarrow e'$, then $V(e)\rightarrow V(e')$. 
+\noindent If $e\rightarrow e'$, then $V(e)\rightarrow V(e')$.
 
-\noindent If $V(e)\rightarrow V(e')$, then $e\rightarrow e'$. 
+\noindent If $V(e)\rightarrow V(e')$, then $e\rightarrow e'$.
 
 \noindent If $e\|e'$, then neither $V(e)\le V(e')$ nor $V(e')\le V(e)$
 
@@ -249,7 +249,7 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.7cm},
 
 \subsection{Consistent Cut} \label{section:consistent-cut}
 
-\noindent A consistent cut is a cut $C$, such that for all events $\forall e\in C$, $\exists f \in C, f\rightarrow e$. Otherwise, the cut is unconsistent. 
+\noindent A consistent cut is a cut $C$, such that for all events $\forall e\in C$, $\exists f \in C, f\rightarrow e$. Otherwise, the cut is unconsistent.
 
 \tiny
 \begin{center}
@@ -281,13 +281,13 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.3cm},
 \draw[-] (e22) -- (e23);
 \draw[->] (e23) -- (e14) node [pos=0.3, right = 3mm, align=center] {$m_2$};
 
-% Dummy 
+% Dummy
 \draw[-] (p2) -- (e21);
 \draw[-] (e14) -- (d1);
 \draw[-] (e23) -- (d2);
 
-\draw[dashed] 
-  ([yshift=10pt]$ (e13)!0.5!(e14) $ ) -- 
+\draw[dashed]
+  ([yshift=10pt]$ (e13)!0.5!(e14) $ ) --
   ([yshift=-25pt]$ (e13)!0.5!(p2) $ ) node [below = 1mm] {consistent};
 
 \end{tikzpicture}
@@ -296,7 +296,7 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.3cm},
 
 \subsection{Recording a Snapshot}
 
-\noindent To record a snapshot, we need to record the states of all processes and the state of communication channels.  
+\noindent To record a snapshot, we need to record the states of all processes and the state of communication channels.
 
 \subsubsection{Chandy and Lamport Algorithm}
 
@@ -306,7 +306,7 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.3cm},
 
 \begin{itemize}
   \item Any process may initiate a snapshot recording at any time
-  \item Each non-initiating process records its proces state on receiving the first marker message
+  \item Each non-initiating process records its process state on receiving the first marker message
   \item If $p_j$ is the initiating process, $p_j$ initiates the messages arriving on channel $c_{i\rightarrow j}$ between $p_j$ initiates the snapshot recording and receives the marker message from $p_i$
   \item If $p_j$ is non-initiating process and $c_{i\rightarrow j}$ is the channel through which $p_j$ receives its first marker message, $c_{i\rightarrow j}$ state is recorded as an empty set
   \item If $p_j$ is non-initiating process and $c_{i\rightarrow j}$ is not the channel through which $p_j$ receives its first marker message, $p_j$ records the message arriving on channel $c_{i\rightarrow j}$ between $p_j$ receives the first marker message and the marker message from $p_i$
@@ -315,11 +315,11 @@ roundnode/.style={circle, draw=black, thick, minimum size=0.3cm},
 
 \section{Distributed Debugging}
 
-\noindent We want to establish what occurred during the execution of a distributed system and to check whether they are correct. 
+\noindent We want to establish what occurred during the execution of a distributed system and to check whether they are correct.
 
 \subsection{Lattice of Consistent Global States}
 
-\noindent Refering to the figure in section \ref{section:consistent-cut}, we will get the following lattice of consistent global states. The lattice is constructed by listing all consistent global states starting from the initial state and advance the global state by one event at a time. 
+\noindent Referring to the figure in section \ref{section:consistent-cut}, we will get the following lattice of consistent global states. The lattice is constructed by listing all consistent global states starting from the initial state and advance the global state by one event at a time.
 
 \begin{center}
 \begin{tikzpicture}[
