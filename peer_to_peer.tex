@@ -3,13 +3,13 @@
 
 \noindent All processes play similar roles and they interact cooperatively as peers to perform distributed computation. Every node provides some services that helps other nodes in the network to get services. \\
 
-\noindent We will look at three unstructured P2P File Sharing, i.e. Napster, Gnutella, and KaZaA, and three structured DHT Systems, i.e. Distributed Hash Table Services, Consistent Hashing, and Chord. 
+\noindent We will look at three unstructured P2P File Sharing, i.e. Napster, Gnutella, and KaZaA, and three structured DHT Systems, i.e. Distributed Hash Table Services, Consistent Hashing, and Chord.
 
 \section{Napster}
 
-\noindent Napster has a centralized directory server for centrolized search, but file downloads are done in a distributed way. The centralized server has difficult time keeping up with increasing traffic.\\
+\noindent Napster has a centralized directory server for centralized search, but file downloads are done in a distributed way. The centralized server has difficult time keeping up with increasing traffic.\\
 
-\noindent All clients will upload file list and IP address to Napster centralized directory. Users will search for files using the centralized directory. When users found the file they want, they pings hosts that have the file to look for the best transfer rate for downloading. 
+\noindent All clients will upload file list and IP address to Napster centralized directory. Users will search for files using the centralized directory. When users found the file they want, they pings hosts that have the file to look for the best transfer rate for downloading.
 
 \section{Gnutella}
 
@@ -17,7 +17,7 @@
 
 \noindent However, Gnutella use flooding strategy to search for files, and reverse path forwarding is used for responses. The actual downloading is done by point-to-point TCP. As a result, each query can generate huge amount of traffic. Users can limit the number of hops to travel by setting the TTL field.\\
 
-\noindent To establish connection, we first connect to a bootstrap node to get IP addresses of existing Gnutella nodes. Then, we send join messages to some existing Gnutella nodes. 
+\noindent To establish connection, we first connect to a bootstrap node to get IP addresses of existing Gnutella nodes. Then, we send join messages to some existing Gnutella nodes.
 
 \section{KaZaA}
 
@@ -31,7 +31,7 @@
 
 \noindent Query: Node first sends keyword query to supernode. If supernode cannot get enough number of matches, it forwards query to subset of supernodes. Query results contain the ContentHash of the wanted file and a list of nodes holding the file.\\
 
-\noindent Download: If file is found in multiple nodes, user can download the files parallelly. 
+\noindent Download: If file is found in multiple nodes, user can download the files parallelly.
 
 \section{Distributed Hash Table Services}
 
@@ -39,9 +39,9 @@
 
 \noindent We use hash function to map files to unique identifiers. Each node is responsible for the files that hash within its range, it must know the location of the files (indirect) or physically store the files (direct). \\
 
-\noindent Query must be efficiently rounted to the node whose range covers the file. This should be implemented in a fully distributed manner. \\
+\noindent Query must be efficiently routed to the node whose range covers the file. This should be implemented in a fully distributed manner. \\
 
-\noindent When nodes join / leave the system, we need bootstrap mechanism, repartition range space, and update routing information. 
+\noindent When nodes join / leave the system, we need bootstrap mechanism, repartition range space, and update routing information.
 
 \section{Consistent Hashing}
 
