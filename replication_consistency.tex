@@ -5,29 +5,29 @@
 
 \section{Data-Centric Consistency Models}
 
-\noindent To provide a system wide consistent view of data objets when concurrent processes simultaneously update data objects.
+\noindent To provide a system wide consistent view of data objects when concurrent processes simultaneously update data objects.
 
 \noindent Target scenario: concurrent processes may simultaneously update data objects.
 
 \subsection{Strict Consistency}
 
-\noindent Any read operation on a data object returns a value corresponding to the result of the most recent write operation on the object. All wirtes are instaneously visible to all clients. \\
+\noindent Any read operation on a data object returns a value corresponding to the result of the most recent write operation on the object. All writes are instantaneously visible to all clients. \\
 
-\noindent In the absence of a global clock in distributed system, it is difficult to assign a unique timestamp to each operation that corresponds to actual global time. It is also difficult to define precisely which write operation is the most recent. 
+\noindent In the absence of a global clock in distributed system, it is difficult to assign a unique timestamp to each operation that corresponds to actual global time. It is also difficult to define precisely which write operation is the most recent.
 
 \subsection{Sequential Consistency}
 
-\noindent The result of any execution is the same as if the operations by all clients were executed in some sequential order. The operation of each individual client appear in this sequence in the order specified by its program. 
+\noindent The result of any execution is the same as if the operations by all clients were executed in some sequential order. The operation of each individual client appear in this sequence in the order specified by its program.
 
 \subsection{Causal Consistency}
 
 \noindent Causal consistency makes distinction between events that are potentially causally related and those that are not. A read is causally related to the write that provided the data the read got.\\
 
-\noindent Writes that are potentially causally related must be seen by all clients in the same order. Concurrent writes may be seen in different orders by different clients. 
+\noindent Writes that are potentially causally related must be seen by all clients in the same order. Concurrent writes may be seen in different orders by different clients.
 
 \subsection{FIFO Consistency}
 
-\noindent Writes done by a single client are seen by other clients in the order in which they were issued. Writes from different clients may be seen in different orders by different clients. 
+\noindent Writes done by a single client are seen by other clients in the order in which they were issued. Writes from different clients may be seen in different orders by different clients.
 
 \section{Consistency Protocols}
 
@@ -35,7 +35,7 @@
 
 \subsection{Primary-Based Protocols}
 
-\noindent For each data object, one replica is designated as the primary replica and the remaining replicas are called backups / slaves. 
+\noindent For each data object, one replica is designated as the primary replica and the remaining replicas are called backups / slaves.
 
 \subsubsection{Remote-Write Protocol}
 
@@ -47,13 +47,13 @@
   \item Finally, the primary replica sends an acknowledgement back to the initiating client.
 \end{itemize}
 
-\noindent Write operations are blocking, read operations can be carried out at any replica. 
+\noindent Write operations are blocking, read operations can be carried out at any replica.
 
 \subsubsection{Local-Write Protocol}
 
 \noindent The algorithm:
 \begin{itemize}
-  \item The primary replica is migrated to the replica that receive client request. 
+  \item The primary replica is migrated to the replica that receive client request.
   \item As soon as the primary replica has updated its local copy, it returns an acknowledgement to the client
   \item Then, the primary replica tells the backup replicas to perform the update
 \end{itemize}
@@ -90,7 +90,7 @@ $$R+W > T$$
 
 \noindent To perform read operation, client must contact at least $R$ replicas and the replicas must contain at least one up-to-date replica. The read can be done in any up-to-date replica in the read quorum. \\
 
-\noindent To perform write operation, client must contact at least $W$ replicas and the replicas must contain at least one up-to-date replica. If there are out-of-date replicas in the set, replace them with the up-to-date copy. The write operation is applied to all replicas in the write quorum, and version number is incremented. 
+\noindent To perform write operation, client must contact at least $W$ replicas and the replicas must contain at least one up-to-date replica. If there are out-of-date replicas in the set, replace them with the up-to-date copy. The write operation is applied to all replicas in the write quorum, and version number is incremented.
 
 \section{Client-Centric Consistency Models}
 
@@ -106,7 +106,7 @@ $$R+W > T$$
 
 \subsection{Monotonic Writes}
 
-\noindent A write operation by a client on a data object $x$ is completed before any successive write operation on $x$ by the same client. 
+\noindent A write operation by a client on a data object $x$ is completed before any successive write operation on $x$ by the same client.
 
 \subsection{Read Your Writes}
 
@@ -120,7 +120,7 @@ $$R+W > T$$
 
 \noindent Each write operation is assigned a globally unique identifier. Each client keeps track of two sets of write operations:
 \begin{itemize}
-  \item Read set has identifiers of writes relevant to the read operations performed by the clinet
+  \item Read set has identifiers of writes relevant to the read operations performed by the client
   \item Write set has identifiers of writes performed by the client
 \end{itemize}
 
