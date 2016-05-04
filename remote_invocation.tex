@@ -78,8 +78,7 @@ public class CityServer {
   public static void main(String args[]) {
     try {
       CityImpl aCityImpl = new CityImpl();
-      Naming.rebind(
-          "rmi://.../City", 
+      Naming.rebind("rmi://.../City", 
           aCityImpl);
     } catch (Exception e) {...}
   }
