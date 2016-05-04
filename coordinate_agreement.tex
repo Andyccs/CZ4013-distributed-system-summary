@@ -24,14 +24,14 @@
 
 \noindent To enter critical section, a process sends a request to the server and awaits a reply from it. If no other process has the token, the server replies immediately and granting the token. If there is another process has the token, the server queues the request. The process enters the critical section once it receives the token.\\
 
-\noindent To exit a critical section, a process sends the token back to the server. The server will get the next process from the queue and grat the token.\\
+\noindent To exit a critical section, a process sends the token back to the server. The server will get the next process from the queue and grant the token.\\
 
 \noindent The algorithm satisfies safety and liveness requirements, but the server is a single point of failure and can become a performance bottleneck. \\
 
 \noindent Performance:
 
 \begin{enumerate}
-  \item Bandwidth consumption: entering critical section takes two message (request and grant), existing critical section takes one message (release)
+  \item Bandwidth consumption: entering critical section takes two message (request and grant), exiting critical section takes one message (release)
   \item Client delay: Entering critical section delays the process by two message transmissions
   \item Synchronization delay: two message transmissions (release message to server and grant message to next process)
 \end{enumerate}
