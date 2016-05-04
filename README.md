@@ -7,7 +7,7 @@ This LaTex document is a summary of the course CZ4013 Distributed System, offere
 To download this document in PDF format: 
 
 - [latest stable release](https://github.com/Andyccs/CZ4013-distributed-system-summary/releases/)
-- [latest build](https://www.sharelatex.com/github/repos/Andyccs/CZ4013-distributed-system-summary/builds/latest/output.pdf)
+- [latest build, HEAD](https://www.sharelatex.com/github/repos/Andyccs/CZ4013-distributed-system-summary/builds/latest/output.pdf)
 
 ## Development
 
