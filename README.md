@@ -1,8 +1,13 @@
+[![Build Status](https://www.sharelatex.com/github/repos/Andyccs/CZ4013-distributed-system-summary/builds/latest/badge.svg)](https://www.sharelatex.com/github/repos/Andyccs/CZ4013-distributed-system-summary)
+
 # CZ4013 Distributed System Summary
 
 This LaTex document is a summary of the course CZ4013 Distributed System, offered by School of Computer Science and Engineering, Nanyang Technological University, Singapore. 
 
-To download this document in PDF format: [download now](https://github.com/Andyccs/CZ4013-distributed-system-summary/releases/download/v0.2/CZ4013DistributedSystemSummary.pdf)
+To download this document in PDF format: 
+
+- [latest stable release](https://github.com/Andyccs/CZ4013-distributed-system-summary/releases/)
+- [latest build, HEAD](https://www.sharelatex.com/github/repos/Andyccs/CZ4013-distributed-system-summary/builds/latest/output.pdf)
 
 ## Development
 
